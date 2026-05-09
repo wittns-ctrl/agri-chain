@@ -28,6 +28,8 @@ export class AuthService {
 
       const token = this.jwtService.sign({
         wallet,
+
+        role: 'farmer',
       });
       return {
         success: true,

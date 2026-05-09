@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { MailerService } from '@nestjs-modules/mailer';
+import * as sgMail from '@sendgrid/mail';
 import { welcomeTemplate } from './templates/welcome.template';
 import { contractAwaitingSignatureTemplate } from './templates/contract-awaiting-signature.template';
 import { batchMintedTemplate } from './templates/batch-minted.template';
@@ -11,16 +11,18 @@ import { batchFlaggedTemplate } from './templates/batch-flagged.template';
 
 @Injectable()
 export class MailService {
-  constructor(private readonly mailerService: MailerService) {}
+  constructor() {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+  }
   // welcome email
   async sendWelcomeEmail(email: string, wallet: string) {
-    await this.mailerService.sendMail({
+    const msg = {
       to: email,
-
+      from: process.env.SENDGRID_FROM_EMAIL!,
       subject: 'Welcome to Agrichain',
-
       html: welcomeTemplate(wallet),
-    });
+    };
+    await sgMail.send(msg);
   }
   // batch minted email
   async sendBatchMintedEmail(
@@ -29,14 +31,15 @@ export class MailService {
     tokenId: string,
     qrUrl: string,
   ) {
-    await this.mailerService.sendMail({
+    const msg = {
       to: email,
-
+      from: process.env.SENDGRID_FROM_EMAIL!,
       subject: 'Your Batch Has Been Minted',
-
       html: batchMintedTemplate(batchName, tokenId, qrUrl),
-    });
+    };
+    await sgMail.send(msg);
   }
+
   // new order email
   async sendNewOrderEmail(
     email: string,
@@ -44,14 +47,15 @@ export class MailService {
     quantity: string,
     dashboardUrl: string,
   ) {
-    await this.mailerService.sendMail({
+    const msg = {
       to: email,
-
+      from: process.env.SENDGRID_FROM_EMAIL!,
       subject: 'New Order Placed',
-
       html: newOrderTemplate(orderId, quantity, dashboardUrl),
-    });
+    };
+    await sgMail.send(msg);
   }
+
   // payment released email
   async sendPaymentReleasedEmail(
     email: string,
@@ -59,14 +63,15 @@ export class MailService {
     amount: string,
     dashboardUrl: string,
   ) {
-    await this.mailerService.sendMail({
+    const msg = {
       to: email,
-
+      from: process.env.SENDGRID_FROM_EMAIL!,
       subject: 'Payment Released',
-
       html: paymentReleasedTemplate(orderId, amount, dashboardUrl),
-    });
+    };
+    await sgMail.send(msg);
   }
+
   // dispute raised email
   async sendDisputeRaisedEmail(
     email: string,
@@ -74,14 +79,15 @@ export class MailService {
     deadline: string,
     dashboardUrl: string,
   ) {
-    await this.mailerService.sendMail({
+    const msg = {
       to: email,
-
+      from: process.env.SENDGRID_FROM_EMAIL!,
       subject: 'Dispute Raised',
-
       html: disputeRaisedTemplate(orderId, deadline, dashboardUrl),
-    });
+    };
+    await sgMail.send(msg);
   }
+
   // dispute resolved email
   async sendDisputeResolvedEmail(
     email: string,
@@ -89,14 +95,15 @@ export class MailService {
     outcome: string,
     dashboardUrl: string,
   ) {
-    await this.mailerService.sendMail({
+    const msg = {
       to: email,
-
+      from: process.env.SENDGRID_FROM_EMAIL!,
       subject: 'Dispute Resolved',
-
       html: disputeResolvedTemplate(orderId, outcome, dashboardUrl),
-    });
+    };
+    await sgMail.send(msg);
   }
+
   //B2B contract awaiting signature
   async sendContractAwaitingSignatureEmail(
     email: string,
@@ -106,11 +113,10 @@ export class MailService {
     schedule: string,
     dashboardUrl: string,
   ) {
-    await this.mailerService.sendMail({
+    const msg = {
       to: email,
-
+      from: process.env.SENDGRID_FROM_EMAIL!,
       subject: 'B2B Contract Awaiting Signature',
-
       html: contractAwaitingSignatureTemplate(
         crop,
         quantity,
@@ -118,20 +124,22 @@ export class MailService {
         schedule,
         dashboardUrl,
       ),
-    });
+    };
+    await sgMail.send(msg);
   }
+
   // batch flagging email
   async sendBatchFlaggedEmail(
     email: string,
     batchId: string,
     portalUrl: string,
   ) {
-    await this.mailerService.sendMail({
+    const msg = {
       to: email,
-
+      from: process.env.SENDGRID_FROM_EMAIL!,
       subject: 'Your Batch Has Been Flagged',
-
       html: batchFlaggedTemplate(batchId, portalUrl),
-    });
+    };
+    await sgMail.send(msg);
   }
 }
