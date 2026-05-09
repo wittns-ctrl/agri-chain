@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import * as sgMail from '@sendgrid/mail';
+import sgMail from '@sendgrid/mail';
 import { welcomeTemplate } from './templates/welcome.template';
 import { contractAwaitingSignatureTemplate } from './templates/contract-awaiting-signature.template';
 import { batchMintedTemplate } from './templates/batch-minted.template';

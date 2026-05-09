@@ -31,8 +31,8 @@ type OrderCreatedEvent = {
   orderId: string;
   buyer: string;
   seller: string;
-  amount: number;
-  quantity: number;
+  amount: string;
+  quantity: string;
   metadataUri: string;
 };
 
